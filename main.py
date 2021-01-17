@@ -1,20 +1,28 @@
 import cv2 as cv
 
-img = cv.imread('Photos/people-smiling-1.jpg')
-cv.imshow('Hey', img)
+capture = cv.VideoCapture(0)
 
-gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
-cv.imshow('Gray', gray)
+while True:
+    isTrue, frame = capture.read()
 
-haar_cascade = cv.CascadeClassifier('haar_smile.xml')
+    cv.imshow('Live Video', frame)
 
-faces_rect = haar_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=50)
+    gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
+    blur = cv.GaussianBlur(gray, (7,7), cv.BORDER_DEFAULT)
 
-print(f'Number of faces found = {len(faces_rect)}')
+    haar_cascade = cv.CascadeClassifier('haar_smile.xml')
 
-for (x,y,w,h) in faces_rect:
-    cv.rectangle(img, (x,y), (x+w,y+h), (0,255,0), thickness=2)
+    faces_rect = haar_cascade.detectMultiScale(blur, scaleFactor=1.1, minNeighbors=500)
 
-cv.imshow('Detected Faces', img)
+    print(f'Number of faces found = {len(faces_rect)}')
 
-cv.waitKey(0)
+    for (x, y, w, h) in faces_rect:
+        cv.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), thickness=2)
+
+    cv.imshow('Detected Faces', frame)
+
+    if cv.waitKey(20) & 0xFF == ord('d'):
+        break
+
+capture.release()
+cv.destroyAllWindows()
