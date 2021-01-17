@@ -1,7 +1,7 @@
 import cv2 as cv
 
-capture = cv.VideoCapture('Videos/Mask.mp4')
+img = cv.imread('Photos/Hey.png')
 
-cv.imshow('Cat', capture)
+cv.imshow('Cat', img)
 
 cv.waitKey(0)
