@@ -17,10 +17,11 @@ while True:
         # edits frame for more effective smile recognition
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         blur = cv2.GaussianBlur(gray, (7, 7), cv2.BORDER_DEFAULT)
+        edited_frame = cv2.dilate(blur, (7, 7), iterations=3)
 
         # detects the number of smiles using haar cascades
         haar_cascade = cv2.CascadeClassifier('haar_smile.xml')
-        smile_count = haar_cascade.detectMultiScale(blur, scaleFactor=1.1, minNeighbors=500)
+        smile_count = haar_cascade.detectMultiScale(edited_frame, scaleFactor=1.1, minNeighbors=400)
 
         # prints the frame with the rectangles detecting the smiles
         for (x, y, w, h) in smile_count:
