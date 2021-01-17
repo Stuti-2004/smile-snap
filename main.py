@@ -38,6 +38,8 @@ def validate_input(prompt="Enter a valid input: ", type_=None, range_=None, min_
 people_count = validate_input("How many people will be in the photo? ", int, min_=1)
 show_rectangles = validate_input("Would you like to show the rectangles in the photo (y/n)? ", str.lower,
                                  range_=["y", "n", "yes", "no"])
+show_detection = validate_input("Would you like to see how the image is being processed (y/n)? ", str.lower,
+                                range_=["y", "n", "yes", "no"])
 print("Press 'd' to exit capture.")
 
 # Initializes the device's camera to capture video
@@ -57,18 +59,25 @@ while True:
 
         # Detects the number of smiles using haar cascades
         haar_cascade = cv2.CascadeClassifier("haar_smile.xml")
-        smile_count = haar_cascade.detectMultiScale(edited_frame, scaleFactor=1.1, minNeighbors=350)
+        smile_count = haar_cascade.detectMultiScale(edited_frame, scaleFactor=1.1, minNeighbors=400)
 
         # Prints the frame with or without the rectangles detecting the smiles
+        if show_detection.startswith("y"):
+            video = edited_frame
+        else:
+            video = frame
         if show_rectangles.startswith("y"):
             for (x, y, w, h) in smile_count:
-                cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), thickness=2)
-        cv2.imshow("Live video", frame)
+                cv2.rectangle(video, (x, y), (x + w, y + h), (0, 255, 0), thickness=2)
+        cv2.imshow("Live processed video", video)
 
         # Captures single image once the smiles have met the people count given as input
         if len(smile_count) >= people_count:
             cv2.waitKey(20)
             cv2.imwrite("xD.jpg", frame)
+            img = cv2.imread("xD.jpg")
+            cv2.imshow("Captured photo with smile(s)", img)
+            cv2.waitKey(0)
             break
 
         if cv2.waitKey(20) & 0xFF == ord("d"):
