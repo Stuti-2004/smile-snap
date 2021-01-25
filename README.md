@@ -1,4 +1,4 @@
-# SmileSnap!
+# SmileSnap
 *Ever tried to take a picture but couldn't get the timing right? We got the solution for you!*
 
 ## Inspiration
